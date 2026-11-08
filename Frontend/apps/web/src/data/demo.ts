@@ -1,0 +1,11 @@
+export const banner = '/images/agreste-header.jpg';
+export const modules = ['Visão Geral','Dashboard de Indicadores','Análise de Tendências','Dados de Vendas','Tendências por Categoria','Comparação de Produtos','Cenário da Concorrência','Simulador de Cenários Comparativos','Estoque','Produção','Vendas e Pedidos','Financeiro','Clientes e Fornecedores','Cadastros','Relatórios e Indicadores','Agenda e Notificações','Equipe e Permissões','Configurações','Simulador de Impacto da Concorrência','Gerenciamento de Categorias','Gerenciamento de Confecções','Lançamento de Vendas'];
+export const products = [{name:'Calça jeans',category:'Jeans',price:65},{name:'Short jeans',category:'Jeans',price:42},{name:'Camiseta básica',category:'Malha',price:24},{name:'Conjunto fitness',category:'Moda fitness',price:58}];
+export type Sale = {id:number;product:string;category:string;quantity:number;price:number;date:string;city?:string;confection?:string};
+export const initialSales:Sale[] = Array.from({length:48},(_,i)=>{const p=products[i%4];return {id:i+1,product:p.name,category:p.category,quantity:20+(i*13)%90,price:p.price,date:`2026-${i<24?'09':'10'}-${String(1+(i%24)).padStart(2,'0')}`,city:['Santa Cruz do Capibaribe','Toritama','Caruaru'][i%3]};});
+export const money=(v:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v);
+export const total=(s:Sale[])=>s.reduce((n,r)=>n+r.price*r.quantity,0);
+export const quantity=(s:Sale[])=>s.reduce((n,r)=>n+r.quantity,0);
+export const variation=(a:number,b:number)=>b?`${((a-b)/b*100).toFixed(1).replace('.',',')}%`:'Sem base';
+export type Filters={period:string;category:string;product:string};
+export function filtered(sales:Sale[],f:Filters,previous=false){const [monthName,yearText]=f.period.split(' de ');const monthNames=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];const month=monthNames.indexOf(monthName)+1;const year=Number(yearText);const date=new Date(year,month-1-(previous?1:0),1);const key=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;return sales.filter(s=>s.date.startsWith(key)&&(f.category==='Todas'||s.category===f.category)&&(f.product==='Todos'||s.product===f.product));}
